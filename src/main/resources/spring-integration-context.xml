@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
+http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+        <int:channel id="post-country-code-channel"/>
+        <int:channel id="json-post-country-code-channel"/>
+    <rabbit:queue name="country.code.channel" durable="true"/>
+
+        <int:object-to-json-transformer
+                input-channel="post-country-code-channel"
+                output-channel="json-post-country-code-channel"
+                content-type="text/plain"/>
+
+        <int-amqp:outbound-channel-adapter
+                id="countryCodeAdapter"
+                channel="json-post-country-code-channel"
+                amqp-template="rabbitTemplate"
+                routing-key="country.code.channel"/>
+</beans>
