@@ -9,3 +9,5 @@
 .springBeans
 target
 .DS_Store
+.mvn
+mvn*
